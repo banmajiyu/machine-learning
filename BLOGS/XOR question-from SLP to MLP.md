@@ -20,21 +20,22 @@
 #### 一、基础概念：线性决策边界
 
 >在深度学习中，分类问题的核心是找到一个决策边界（`Decision Boundary`），将不同类别的样本分开。
- 
-- **线性决策边界**：指可以用一条直线（二维平面）或一个平面（三维空间）来完美分隔不同类别的样本。
-- **非线性决策边界**：需要更复杂的曲线或曲面才能分隔样本。
+
+* **线性决策边界**：指可以用一条直线（二维平面）或一个平面（三维空间）来完美分隔不同类别的样本。
+
+* **非线性决策边界**：需要更复杂的曲线或曲面才能分隔样本。
 
 ---
 
 #### 二、线性可分问题（`Linearly Separable`）
 
 ##### 1. 定义
- 
+
 >如果存在一条直线（或超平面），使得所有*正类样本*和*负类样本*分别位于该直线的两侧，则称该问题是**线性可分**的。
 
 ##### 2. 数学表示
 
-假设样本特征为$\boldsymbol{x} = [x_1, x_2]^T$，标签$y \in \{+1, -1\}$。线性决策边界可表示为：$ \boldsymbol{w}^T \boldsymbol{x} + b = 0 $
+假设样本特征为$\boldsymbol{x} = [x_1, x_2]^T$，标签$y \in \{+1, -1\}$。线性决策边界可表示为：$\boldsymbol{w}^T \boldsymbol{x} + b = 0$
 
 其中$\boldsymbol{w}$是权重向量，$b$是偏置项。
 
@@ -69,6 +70,7 @@ plt.plot(x_bound, y_bound, 'k–', label='decision boundary')
 plt.legend()
 plt.show()
 ```
+
 运行结果：
 
 ![](/assets/XOR%20question-from%20SLP%20to%20MLP/2026-02-23-21-41-02.png)
@@ -271,7 +273,7 @@ class Perceptron:
 
 ```python
 class Perceptron:
-    def init(self, learning_rate=0.1, epochs=100):
+    def __init__(self, learning_rate=0.1, epochs=100):
         self.lr = learning_rate
         self.epochs = epochs
         self.weights = None
@@ -348,7 +350,7 @@ def predict(self, X)
 import numpy as np
 
 class Perceptron:
-    def init(self, learning_rate=0.01, epochs=100):
+    def __init__(self, learning_rate=0.01, epochs=100):
         self.lr = learning_rate    # 学习率
         self.epochs = epochs       # 训练轮数
         self.weights = None        # 存储权重
@@ -400,7 +402,7 @@ perceptron.fit(X, y)
 
 # 预测新样本
 test_samples = np.array([[0, 0], [1, 1]])
-print(perceptron.predict(testsamples))  # 输出：[0, 1]
+print(perceptron.predict(test_samples))  # 输出：[0, 1]
 ```
 
 
@@ -538,7 +540,7 @@ $$b -= \text{learning\_rate} \times (y_{prob}-y)$$
 import numpy as np
 
 class LogisticRegression:
-    def init(self, learning_rate=0.1, epochs=100):
+    def __init__(self, learning_rate=0.1, epochs=100):
         self.learning_rate = learning_rate  # 学习率
         self.epochs = epochs                # 迭代次数
         self.weights = None                 # 权重
@@ -564,8 +566,8 @@ class LogisticRegression:
             self.bias -= self.learning_rate * db    # 更新偏置
 
             if _ % 100 == 0:  # 每100次迭代输出一次损失
-                loss = -np.mean(y * np.log(y_predicted) + (1 - y) * np.log(1 - ypredicted))
-                print(f'Epoch {}, Loss: {loss}, Weights: {self.weights}, Bias: {self.bias}, predicted: {y_predicted}')
+                loss = -np.mean(y * np.log(y_predicted + 1e-8) + (1 - y) * np.log(1 - y_predicted + 1e-8))  # 计算损失，添加小常数避免log(0)
+                print(f'Epoch {_}, Loss: {loss}, Weights: {self.weights}, Bias: {self.bias}, predicted: {y_predicted}')
 
     def predict(self, X):   # 预测新样本
         linear_model = np.dot(X, self.weights) + self.bias  # 线性模型
@@ -589,7 +591,7 @@ if name == "main":
     model = LogisticRegression(epochs=1000, learning_rate=0.1)
     model.fit(X, y)
     predictions = model.predict(X)
-    print(“Predictions:”, predictions)
+    print("Predictions:", predictions)
 ```
 
 输出结果：
@@ -615,7 +617,7 @@ Predictions: [0.18733762 0.92730284 0.92730284 0.99858521]
 
 ```python
 # Example usage:
-if name == "main":
+if __name__ == "__main__":
     # dataset
     X = np.array([[0, 0],
                   [0, 1],
@@ -623,10 +625,10 @@ if name == "main":
                   [1, 1]])
     y = np.array([0, 0, 0, 1])  # labels
 
-    model = LogisticRegression(epochs=1000, learningrate=0.1)
+    model = LogisticRegression(epochs=1000, learning_rate=0.1)
     model.fit(X, y)
     predictions = model.predict(X)
-    print(“Predictions:”, predictions)
+    print("Predictions:", predictions)
 ```
 
 输出结果：
@@ -887,7 +889,7 @@ class Tanh(Activation): # Tanh激活函数
         return 1 - t ** 2
     
 class LeakyReLU(Activation):    # Leaky ReLU激活函数
-    def init(self, alpha=0.01):
+    def __init__(self, alpha=0.01):
         self.alpha = alpha
     
     def forward(self, x):
@@ -939,7 +941,7 @@ class Random(Activation):    # Random激活函数
         return np.zeros_like(x)
 
 class LogisticRegression:
-    def init(self, learning_rate=0.1, epochs=100, activation=Sigmoid()):
+    def __init__(self, learning_rate=0.1, epochs=100, activation=Sigmoid()):
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.activation = activation
@@ -978,7 +980,7 @@ class LogisticRegression:
         return np.array(y_predicted_cls)
     
 # Example usage AND :
-if name == "main":
+if __name__ == "__main__":
     X = np.array([[0, 0],
                   [0, 1],
                   [1, 0],
@@ -987,11 +989,11 @@ if name == "main":
 
     activates = [Sigmoid(), ReLU(), Tanh(), LeakyReLU(), Cube(), Arctan(), Sine(), Step(), Square(), Random()]  # 不同的激活函数
     for activate in activates:
-        print(f"\n===Activation: {activate.class.name}===")   # 输出当前激活函数
+        print(f"\n===Activation: {activate.__class__.__name__}===")   # 输出当前激活函数
         model = LogisticRegression(epochs=10000, learning_rate=0.1, activation=activate)
         model.fit(X, y)
         predictions = model.predict(X)
-        print(f"Predictions for {activate.class.name}: {predictions}")
+        print(f"Predictions for {activate.__class__.__name__}: {predictions}")
 ```
 
 这里面的激活函数比较多，有一些还是我瞎编的，它们长这样：
@@ -1647,7 +1649,7 @@ Predictions for Random: [0.87954606 0.15693083 0.41057489 0.61516742]
 import numpy as np
 
 class MonkeyPerceptron:
-    def init(self):
+    def __init__(self):
         self.weights = None
         self.bias = None
         self.Loss = None
@@ -1670,12 +1672,12 @@ class MonkeyPerceptron:
             if self.Loss is None or loss < self.Loss:  # 更新权重和偏置
                 self.Loss = loss
                 self.weights = rand_weights
-                self.bias = randbias
+                self.bias = rand_bias
             
-            print(f"===Epoch {}=== \nLoss: {loss:.6f}, Weight: {rand_weights}, Bias: {randbias}\nBestLoss: {self.Loss:.6f}, BestWeights: {self.weights}, BestBias: {self.bias}")
+            print(f"===Epoch {_}=== \nLoss: {loss:.6f}, Weight: {rand_weights}, Bias: {rand_bias}\nBestLoss: {self.Loss:.6f}, BestWeights: {self.weights}, BestBias: {self.bias}")
 
             if self.Loss is not None and self.Loss < 0.01:  # 如果损失足够小，停止训练
-                print(f”最终：Epoch {}, Loss: {self.Loss:.6f}, Weights: {self.weights}, Bias: {self.bias}“)
+                print(f"最终：Epoch {_}, Loss: {self.Loss:.6f}, Weights: {self.weights}, Bias: {self.bias}")
                 break
             
     def predict(self, X):
@@ -1684,7 +1686,7 @@ class MonkeyPerceptron:
         y_predicted_cls = [i for i in y_predicted]
         return np.array(y_predicted_cls)
     
-if name == “main”:
+if __name__ == "__main__":
     X = np.array([[0, 0],
                   [0, 1],
                   [1, 0],
@@ -1694,7 +1696,7 @@ if name == “main”:
     perceptron = MonkeyPerceptron()
     perceptron.fit(X, y)
     res = perceptron.predict(X)
-    print(“Predictions:”, res)
+    print(f"Predictions: {res}")
 ```
 
 训练结果（训练用时 $0.0s$）（别问我刷了多久🤣）：
@@ -1766,7 +1768,7 @@ Predictions: [4.05125105e-07 8.05199600e-03 2.38874388e-03 9.79582275e-01]
 import numpy as np
 
 class LogisticRegression:
-    def init(self, learning_rate=0.1, epochs=100):
+    def __init__(self, learning_rate=0.1, epochs=100):
         self.learning_rate = learning_rate
         self.epochs = epochs            
         self.weights = None 
@@ -1791,8 +1793,8 @@ class LogisticRegression:
             self.bias -= self.learning_rate * db
 
             if _ % 100000 == 0:  # 每10万次迭代输出一次损失
-                loss = -np.mean(y * np.log(y_predicted + 1e-15) + (1 - y) * np.log(1 - ypredicted + 1e-15)) # 加上小常数避免log(0)
-                print(f'Epoch {}, Loss: {loss}, Weights: {self.weights}, Bias: {self.bias}, predicted: {y_predicted}')
+                loss = -np.mean(y * np.log(y_predicted + 1e-15) + (1 - y) * np.log(1 - y_predicted + 1e-15)) # 加上小常数避免log(0)
+                print(f'Epoch {_}, Loss: {loss}, Weights: {self.weights}, Bias: {self.bias}, predicted: {y_predicted}')
 
     def predict(self, X):
         linear_model = np.dot(X, self.weights) + self.bias
@@ -1801,7 +1803,7 @@ class LogisticRegression:
         return np.array(y_predicted_cls)
 
 # 训练异或问题
-if name == “main”:
+if __name__ == "__main__":
     # dataset
     X = np.array([[0, 0],
                   [0, 1],
@@ -1812,7 +1814,7 @@ if name == “main”:
     model = LogisticRegression(epochs=1000000, learning_rate=0.1)
     model.fit(X, y)
     predictions = model.predict(X)
-    print(“Predictions:”, predictions)
+    print(f"Predictions: {predictions}")
 ```
 
 训练时长$7.5s$，结果如下：
@@ -2044,7 +2046,7 @@ b2 = b2 - η·dL/db2
 import numpy as np
 
 class MLP:
-    def init(self, input_size, hidden_size, output_size, learning_rate=0.1):
+    def __init__(self, input_size, hidden_size, output_size, learning_rate=0.1):
         # 初始化参数
         self.W1 = np.random.randn(hidden_size, input_size) * 0.01   # 输入层到隐藏层的权重
         self.b1 = np.zeros((hidden_size, 1))                        # 输入层到隐藏层的偏置
@@ -2110,7 +2112,7 @@ class MLP:
             self.backward(X, y, output)
             
             if epoch % 1000 == 0:
-                print(f”Epoch {epoch}, Loss: {loss:.6f}“)
+                print(f"Epoch {epoch}, Loss: {loss:.6f}")
         
         return losses
 
@@ -2130,12 +2132,12 @@ def test_xor():
     # 预测
     predictions = mlp.forward(X)
     print("\nXOR预测结果:")
-    print(f”输入 (0,0): {predictions[0,0]:.4f} → 舍入: {round(predictions[0,0])}“)
-    print(f”输入 (0,1): {predictions[0,1]:.4f} → 舍入: {round(predictions[0,1])}“)
-    print(f”输入 (1,0): {predictions[0,2]:.4f} → 舍入: {round(predictions[0,2])}“)
-    print(f”输入 (1,1): {predictions[0,3]:.4f} → 舍入: {round(predictions[0,3])}“)
+    print(f"输入 (0,0): {predictions[0,0]:.4f} → 舍入: {round(predictions[0,0])}")
+    print(f"输入 (0,1): {predictions[0,1]:.4f} → 舍入: {round(predictions[0,1])}")
+    print(f"输入 (1,0): {predictions[0,2]:.4f} → 舍入: {round(predictions[0,2])}")
+    print(f"输入 (1,1): {predictions[0,3]:.4f} → 舍入: {round(predictions[0,3])}")
 
-if name == “main”:
+if __name__ == "__main__":
     test_xor()
 ```
 
