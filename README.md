@@ -8,5 +8,3 @@ A repository dedicated to machine learning, providing a variety of algorithms an
 1.  This is an open repository
 2.  It will include some study notebooks about machine learning
 3.  I try to make it easy to understand and learn cs i am also a beginner
-
-
